@@ -16,29 +16,41 @@ output:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
-```
-
-Column {data-width=650}
------------------------------------------------------------------------
-
-### Chart A
-
-```{r}
-
+library(tidyverse)
+library(plotly)
 ```
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Star Wars Character Heights by Name
 
 ```{r}
+x <- ggplot(starwars, aes(x = name, y = height)) +
+  geom_bar(stat = "identity") +
+  coord_flip()
 
+ggplotly(x)
 ```
 
-### Chart C
+### Gender by Homeworld
 
 ```{r}
+p <- ggplot(starwars, aes(x = homeworld , fill = gender)) +
+  geom_bar()
 
+ggplotly(p)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Star Wars data table
+
+```{r}
+starwars <- starwars %>%
+  select(name, height, mass, gender, species, homeworld)
+
+knitr::kable(starwars)
 ```
 
