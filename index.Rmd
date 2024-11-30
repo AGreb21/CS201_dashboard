@@ -1,5 +1,5 @@
 ---
-title: "CS201 Flexdashboard Practice"
+title: "CS201 Flexdashboard"
 author: "Alex Greb"
 date: 11/18/24
 output: 
@@ -19,6 +19,8 @@ library(flexdashboard)
 library(tidyverse)
 library(plotly)
 ```
+
+
 
 Column {data-width=350}
 -----------------------------------------------------------------------
