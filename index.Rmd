@@ -18,41 +18,68 @@ output:
 library(flexdashboard)
 library(tidyverse)
 library(plotly)
+library(here)
+library(janitor)
 ```
 
+```{r}
+griffeydata <- read_csv(here("data/KenGriffyJr.csv"))
+griffeydata <- griffeydata %>%
+  clean_names()
+```
 
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Star Wars Character Heights by Name
+### Griffey OPS+
 
 ```{r}
-x <- ggplot(starwars, aes(x = name, y = height)) +
-  geom_bar(stat = "identity") +
-  coord_flip()
+x <- ggplot(griffeydata, aes(x = year, y = ops_2)) +
+  geom_point()
 
 ggplotly(x)
 ```
 
-### Gender by Homeworld
+### Griffey Homeruns
 
 ```{r}
-p <- ggplot(starwars, aes(x = homeworld , fill = gender)) +
-  geom_bar()
+p <- ggplot(griffeydata, aes(x = tm, y = hr)) +
+  geom_boxplot()
 
 ggplotly(p)
 ```
 
-Column {data-width=650}
+Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Star Wars data table
+### Griffey data 
 
 ```{r}
-starwars <- starwars %>%
-  select(name, height, mass, gender, species, homeworld)
+#starwars <- starwars %>%
+ # select(name, height, mass, gender, species, homeworld)
 
-knitr::kable(starwars)
+knitr::kable(griffeydata)
 ```
+
+### Griffey Batting Average
+```{r}
+y <- ggplot(griffeydata, aes(x = year, y = ba)) +
+  geom_line()
+
+ggplotly(y)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
