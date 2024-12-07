@@ -1,14 +1,14 @@
 ---
-title: "CS201 Flexdashboard"
+title: "Ken Griffey Jr. Career Statistics"
 author: "Alex Greb"
 date: 11/18/24
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns # can also be rows
-    vertical_layout: fill # can also be scroll
+    orientation: columns # can be rows or columns
+    vertical_layout: fill # can be scroll or fill
     source_code: embed
     theme:
-      bootswatch: yeti
+      bootswatch: lux
     navbar: 
       - { title: "Alex Greb", href: "https://agreb21.github.io", align: right }
       - { icon: "fa fa-github", href: "https://github.com/AGreb21", align: right, target: blank }
@@ -20,6 +20,8 @@ library(tidyverse)
 library(plotly)
 library(here)
 library(janitor)
+library(ggthemes)
+library(kableExtra)
 ```
 
 ```{r}
@@ -28,30 +30,32 @@ griffeydata <- griffeydata %>%
   clean_names()
 ```
 
+```{r}
+griffeydata <- griffeydata[-c(21,22), ]
+griffeydata <- griffeydata %>%
+  mutate(tm = ifelse(tm == "TOT", "CIN", tm)) %>%
+  mutate(lg = ifelse(lg == "MLB", "NL", lg))
+```
+
+
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Griffey OPS+
+### Griffey Homeruns By Team
 
 ```{r}
-x <- ggplot(griffeydata, aes(x = year, y = ops_2)) +
-  geom_point()
+homerun_graph <- ggplot(griffeydata, aes(x = tm, y = hr, color = tm)) +
+  geom_boxplot() +
+  theme_solarized()+
+  labs(
+    #title = "Griffey Homeruns by Team",
+    x = "Team",
+    y = "Homeruns"
+  )
 
-ggplotly(x)
+ggplotly(homerun_graph)
 ```
-
-### Griffey Homeruns
-
-```{r}
-p <- ggplot(griffeydata, aes(x = tm, y = hr)) +
-  geom_boxplot()
-
-ggplotly(p)
-```
-
-Column {data-width=350}
------------------------------------------------------------------------
 
 ### Griffey data 
 
@@ -59,19 +63,54 @@ Column {data-width=350}
 #starwars <- starwars %>%
  # select(name, height, mass, gender, species, homeworld)
 
-knitr::kable(griffeydata)
+knitr::kable(griffeydata) #%>%
+  #kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  #kableExtra::scroll_box(width = "30%", height = "300px") %>%
+  #kableExtra::kable_styling(font_size = 10)
 ```
 
-### Griffey Batting Average
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Griffey OPS+ By Season
+
 ```{r}
-y <- ggplot(griffeydata, aes(x = year, y = ba)) +
-  geom_line()
+ops_plus_graph <- ggplot(griffeydata, aes(x = year, y = ops_2, color = tm)) +
+  geom_point() +
+  labs(
+    #title = "Griffey OPS+ by season",
+    x = "Year",
+    y = "OPS +",
+    color = "Team"
+  ) +
+  theme_solarized()+
+  geom_smooth(color = "black")
 
-ggplotly(y)
+ggplotly(ops_plus_graph)
 ```
 
 
+### Griffey Batting Average By Year
+```{r}
+batting_average_graph <- ggplot(griffeydata, aes(x = year, y = ba)) +
+  geom_line()+
+  labs(
+    #title = "Griffey Batting Average by Year",
+    x = "Year",
+    y = "Batting Average"
+  )+
+  theme_solarized()
 
+ggplotly(batting_average_graph)
+```
+
+
+### Ken Griffey Jr.'s Career Overview
+The data I am using for my dashboard is the career statistics of Ken Griffey Jr.  I wanted to explore how he got better or worse over his career, as well as the differences in his statistics for the different teams he played on.
+
+Data author: Jarred Priester
+https://www.kaggle.com/datasets/jarredpriester/ken-griffey-jr-career-stats
 
 
 

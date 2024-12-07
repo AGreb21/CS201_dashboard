@@ -20,9 +20,6 @@ library(tidyverse)
 library(plotly)
 ```
 
-```{r}
-
-```
 
 
 Column {data-width=350}

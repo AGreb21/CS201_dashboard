@@ -4,16 +4,18 @@ format: html
 editor: visual
 ---
 
-```{r}
-library(tidyverse)
-library(plotly)
-library(here)
-library(janitor)
-```
-
 ## HW #7: Dashboard Prep
 
 You've looked at different types of data, conducted exploratory data analysis, manipulated data with dplyr and other tidy methods, created maps.... Now it's time to think about your flexdashboard final project!
+
+```{r}
+library(here)
+library(tidyverse)
+library(GeomMLBStadiums)
+library(ggplot2)
+library(dplyr)
+library(janitor)
+```
 
 ## Data
 
@@ -25,6 +27,17 @@ The data I am looking at is the statistics from the career of Ken Griffey Jr. by
 griffeydata <- read_csv(here("data/KenGriffyJr.csv"))
 griffeydata <- griffeydata %>%
   clean_names()
+```
+
+```{r}
+griffeydata <- griffeydata[-c(21,22), ] 
+```
+
+```{r}
+griffeydata <- griffeydata %>%
+  mutate(tm = ifelse(tm == "TOT", "CIN", tm)) %>%
+  mutate(lg = ifelse(lg == "MLB", "NL", lg))
+
 ```
 
 ## Variables of interest
@@ -44,18 +57,38 @@ You can present plots as "answers" to your exploratory questions above. You'll n
 These can look really basic right now. We'll talk more about themes and layers next week.
 
 ```{r}
-ggplot(griffeydata, aes(x = year, y = ops_2)) +
-  geom_point()
+ggplot(griffeydata, aes(x = year, y = ops_2, color = tm)) +
+  geom_point() +
+  labs(
+    title = "Griffey OPS+ by season",
+    x = "Year",
+    y = "OPS +",
+    color = "Team"
+  ) +
+  theme_solarized()+
+  geom_smooth(color = "black")
 ```
 
 ```{r}
-ggplot(griffeydata, aes(x = tm, y = hr)) +
-  geom_boxplot()
+ggplot(griffeydata, aes(x = tm, y = hr, color = tm)) +
+  geom_boxplot() +
+  theme_solarized()+
+  labs(
+    title = "Griffey Homeruns by Team",
+    x = "Team",
+    y = "Homeruns"
+  )
 ```
 
 ```{r}
 ggplot(griffeydata, aes(x = year, y = ba)) +
-  geom_line()
+  geom_line()+
+  labs(
+    title = "Griffey Batting Average by Year",
+    x = "Year",
+    y = "Batting Average"
+  )+
+  theme_solarized()
 ```
 
 ## flexdashboards
